@@ -151,13 +151,10 @@ def login():
     st.title("Sistem Delphi SJKP")
     st.caption("Pengesahan kandungan soal selidik — Pusingan 1")
     role = st.radio("Peranan", ["Pakar", "Admin"], horizontal=True)
-    nama = st.text_input("Nama (untuk pakar)") if role == "Pakar" else ""
-    pwd = st.text_input("Kata laluan", type="password")
-    if st.button("Log masuk", type="primary"):
-        if role == "Admin" and pwd == st.secrets.get("admin_password"):
-            st.session_state.auth = "admin"
-            st.rerun()
-        elif role == "Pakar" and pwd == st.secrets.get("expert_password"):
+    if role == "Pakar":
+        st.caption("Pakar tidak perlu kata laluan — masukkan nama sahaja untuk mula.")
+        nama = st.text_input("Nama anda")
+        if st.button("Mula menilai", type="primary"):
             if not nama.strip():
                 st.warning("Sila masukkan nama.")
             else:
@@ -165,8 +162,14 @@ def login():
                 st.session_state.nama = nama.strip()
                 st.session_state.expert_id = nama.strip().lower().replace(" ", "_")
                 st.rerun()
-        else:
-            st.error("Kata laluan salah.")
+    else:
+        pwd = st.text_input("Kata laluan admin", type="password")
+        if st.button("Log masuk", type="primary"):
+            if pwd and pwd == st.secrets.get("admin_password"):
+                st.session_state.auth = "admin"
+                st.rerun()
+            else:
+                st.error("Kata laluan salah.")
 
 
 # ----------------------------------------------------------------------------
